@@ -4,16 +4,16 @@ namespace Admin\Controller;
 use Common\Controller\AdminbaseController;
 
 class NavController extends AdminbaseController {
-
+	
 	protected $nav_model;
 	protected $navcat_model;
-
+	
 	public function _initialize() {
 		parent::_initialize();
 		$this->nav_model = D("Common/Nav");
 		$this->navcat_model =D("Common/NavCat");
 	}
-
+	
 	// 导航菜单列表
 	public function index() {
 		$cid=I('request.cid',0,'intval');
@@ -21,7 +21,7 @@ class NavController extends AdminbaseController {
 			$navcat=$this->navcat_model->find();
 			$cid=$navcat['navcid'];
 		}
-
+		
 		$result = $this->nav_model->where(array('cid'=>$cid))->order(array("listorder" => "ASC"))->select();
 		$tree = new \Tree();
 		$tree->icon = array('&nbsp;&nbsp;&nbsp;│ ', '&nbsp;&nbsp;&nbsp;├─ ', '&nbsp;&nbsp;&nbsp;└─ ');
@@ -31,7 +31,7 @@ class NavController extends AdminbaseController {
 			$r['status'] = $r['status'] ? L('DISPLAY') : L('HIDDEN');
 			$array[] = $r;
 		}
-
+	
 		$tree->init($array);
 		$str = "<tr>
 				<td><input name='listorders[\$id]' type='text' size='3' value='\$listorder' class='input input-order'></td>
@@ -42,14 +42,14 @@ class NavController extends AdminbaseController {
 			</tr>";
 		$categorys = $tree->get_tree(0, $str);
 		$this->assign("categorys", $categorys);
-
+		
 		$cats=$this->navcat_model->select();
 		$this->assign("navcats",$cats);
 		$this->assign("navcid",$cid);
-
+		
 		$this->display();
 	}
-
+	
 	// 导航菜单添加
 	public function add() {
 		$cid=I('request.cid',0,'intval');
@@ -64,29 +64,30 @@ class NavController extends AdminbaseController {
 			$r['selected'] = $r['id']==$parentid?"selected":"";
 			$array[] = $r;
 		}
-
+			
 		$tree->init($array);
 		$str="<option value='\$id' \$selected>\$spacer\$label</option>";
 		$nav_trees = $tree->get_tree(0, $str);
 		$this->assign("nav_trees", $nav_trees);
-
+	   
 		$cats=$this->navcat_model->select();
 		$this->assign("navcats",$cats);
-
+		
 		$navs= $this->_select();
+		
 		foreach ($navs as $key=>$navdata){
 		    $tree->init($navdata['items']);
 		    $tpl="<option value='\$rule' >\$spacer\$label</option>";
 		    $navs_html = $tree->get_tree(0, $tpl);
 		    $navs[$key]['html']=$navs_html;
 		}
-
+		
 		$this->assign('navs', $navs);
-
+		
 		$this->assign("navcid",$cid);
 		$this->display();
 	}
-
+	
 	// 导航菜单添加提交
 	public function add_post() {
 		if (IS_POST) {
@@ -97,7 +98,7 @@ class NavController extends AdminbaseController {
 			}else{
 			    $data['href']=base64_decode($data['href']);
 			}
-
+			
 			if ($this->nav_model->create($data)!==false) {
 				$result=$this->nav_model->add();
 				if ($result!==false) {
@@ -121,7 +122,7 @@ class NavController extends AdminbaseController {
 			}
 		}
 	}
-
+	
 	// 导航菜单编辑
 	public function edit() {
 		$cid=I('request.cid',0,'intval');;
@@ -137,50 +138,50 @@ class NavController extends AdminbaseController {
 			$r['selected'] = $r['id']==$parentid?"selected":"";
 			$array[] = $r;
 		}
-
+		
 		$tree->init($array);
 		$str="<option value='\$id' \$selected>\$spacer\$label</option>";
 		$nav_trees = $tree->get_tree(0, $str);
 		$this->assign("nav_trees", $nav_trees);
-
-
+		
+		
 		$cats=$this->navcat_model->select();
 		$this->assign("navcats",$cats);
-
+			
 		$nav=$this->nav_model->where(array('id'=>$id))->find();
 		$nav['hrefold']=$nav['href'];
 		$nav['href'] = base64_encode($nav['href']);
-
+			
 		$this->assign($nav);
-
+		
 		$navs= $this->_select();
-
+		
 		foreach ($navs as $key=>$navdata){
 		    $tree->init($navdata['items']);
 		    $tpl="<option value='\$rule' >\$spacer\$label</option>";
 		    $navs_html = $tree->get_tree(0, $tpl);
 		    $navs[$key]['html']=$navs_html;
 		}
-
+		
 		$this->assign('navs', $navs);
-
+		
 		$this->assign("navcid",$cid);
 		$this->display();
 	}
-
+	
 	// 导航菜单编辑提交
 	public function edit_post() {
-
+		
 		if (IS_POST) {
 			$parentid=empty($_POST['parentid'])?"0":$_POST['parentid'];
 			if(empty($parentid)){
 				$_POST['path']="0-".$_POST['id'];
 			}else{
 				$parent=$this->nav_model->where("id=$parentid")->find();
-
+					
 				$_POST['path']=$parent['path']."-".$_POST['id'];
 			}
-
+			
 			$data=I("post.");
 			if(isset($data['external_href'])){
 			    $data['href']=$data['external_href'];
@@ -201,7 +202,7 @@ class NavController extends AdminbaseController {
 			}
 		}
 	}
-
+	
 	// 导航菜单排序
 	public function listorders() {
 		$status = parent::_listorders($this->nav_model);
@@ -211,7 +212,7 @@ class NavController extends AdminbaseController {
 			$this->error("排序更新失败！");
 		}
 	}
-
+	
 	// 导航菜单删除
 	public function delete() {
 		$id = I("get.id",0,'intval');
@@ -219,14 +220,14 @@ class NavController extends AdminbaseController {
 		if ($count > 0) {
 			$this->error("该菜单下还有子菜单，无法删除！");
 		}
-
+		
 		if ($this->nav_model->delete($id)!==false) {
 			$this->success("删除菜单成功！");
 		} else {
 			$this->error("删除失败！");
 		}
 	}
-
+	
 	/**
 	 * 获取所有应用可用的导航菜单
 	 */
@@ -234,7 +235,7 @@ class NavController extends AdminbaseController {
 		$apps=sp_scan_dir(SPAPP."*");
 		$navs=array();
 		foreach ($apps as $a){
-
+		
 			if(is_dir(SPAPP.$a)){
 				if(!(strpos($a, ".") === 0)){
 					$navfile=SPAPP.$a."/nav.php";

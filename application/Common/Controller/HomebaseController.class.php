@@ -1,6 +1,8 @@
 <?php
 namespace Common\Controller;
+
 use Common\Controller\AppframeController;
+
 class HomebaseController extends AppframeController {
 	
 	public function __construct() {
@@ -10,24 +12,13 @@ class HomebaseController extends AppframeController {
 	
 	function _initialize() {
 		parent::_initialize();
-		
-		$this->variable_model = D("Common/Variable");
-		
-		$sql=$this->variable_model->select();
-		foreach($sql as $v){
-			$name[]=$v['variablename'];
-			$data[]=$v['variablevalue'];
-			}
-
-		for($i=0;$i<count($name);$i++){
-			$this->$name[$i]=$data[$i];
-			}
-			
+		defined('TMPL_PATH') or define("TMPL_PATH", C("SP_TMPL_PATH"));
 		$site_options=get_site_options();
 		$this->assign($site_options);
 		$ucenter_syn=C("UCENTER_ENABLED");
 		if($ucenter_syn){
-			if(!isset($_SESSION["user"])){
+		    $session_user=session('user');
+			if(empty($session_user)){
 				if(!empty($_COOKIE['thinkcmf_auth'])  && $_COOKIE['thinkcmf_auth']!="logout"){
 					$thinkcmf_auth=sp_authcode($_COOKIE['thinkcmf_auth'],"DECODE");
 					$thinkcmf_auth=explode("\t", $thinkcmf_auth);
@@ -37,7 +28,7 @@ class HomebaseController extends AppframeController {
 					$user=$users_model->where($where)->find();
 					if(!empty($user)){
 						$is_login=true;
-						$_SESSION["user"]=$user;
+						session('user',$user);
 					}
 				}
 			}else{
@@ -54,8 +45,9 @@ class HomebaseController extends AppframeController {
 	 * 检查用户登录
 	 */
 	protected function check_login(){
-		if(!isset($_SESSION["user"])){
-			$this->error('您还没有登录！',__ROOT__."/");
+	    $session_user=session('user');
+		if(empty($session_user)){
+			$this->error('您还没有登录！',leuu('user/login/index',array('redirect'=>base64_encode($_SERVER['HTTP_REFERER']))));
 		}
 		
 	}
@@ -85,8 +77,8 @@ class HomebaseController extends AppframeController {
 		$options = json_decode($option['option_value'], true);
 		//邮件标题
 		$title = $options['title'];
-		$uid=$_SESSION['user']['id'];
-		$username=$_SESSION['user']['user_login'];
+		$uid=session('user.id');
+		$username=session('user.user_login');
 	
 		$activekey=md5($uid.time().uniqid());
 		$users_model=M("Users");
@@ -101,7 +93,7 @@ class HomebaseController extends AppframeController {
 		$template = $options['template'];
 		$content = str_replace(array('http://#link#','#username#'), array($url,$username),$template);
 	
-		$send_result=sp_send_email($_SESSION['user']['user_email'], $title, $content);
+		$send_result=sp_send_email(session('user.user_email'), $title, $content);
 	
 		if($send_result['error']){
 			$this->error('激活邮件发送失败，请尝试登录后，手动发送激活邮件！');
@@ -118,8 +110,7 @@ class HomebaseController extends AppframeController {
 	 * @return mixed
 	 */
 	public function display($templateFile = '', $charset = '', $contentType = '', $content = '', $prefix = '') {
-		//echo $this->parseTemplate($templateFile);
-		parent::display($this->parseTemplate($templateFile), $charset, $contentType);
+		parent::display($this->parseTemplate($templateFile), $charset, $contentType,$content,$prefix);
 	}
 	
 	/**
@@ -147,19 +138,23 @@ class HomebaseController extends AppframeController {
 		
 		$tmpl_path=C("SP_TMPL_PATH");
 		define("SP_TMPL_PATH", $tmpl_path);
-		// 获取当前主题名称
-		$theme      =    C('SP_DEFAULT_THEME');
-		if(C('TMPL_DETECT_THEME')) {// 自动侦测模板主题
-			$t = C('VAR_TEMPLATE');
-			if (isset($_GET[$t])){
-				$theme = $_GET[$t];
-			}elseif(cookie('think_template')){
-				$theme = cookie('think_template');
-			}
-			if(!file_exists($tmpl_path."/".$theme)){
-				$theme  =   C('SP_DEFAULT_THEME');
-			}
-			cookie('think_template',$theme,864000);
+		if($this->theme) { // 指定模板主题
+		    $theme = $this->theme;
+		}else{
+		    // 获取当前主题名称
+		    $theme      =    C('SP_DEFAULT_THEME');
+		    if(C('TMPL_DETECT_THEME')) {// 自动侦测模板主题
+		        $t = C('VAR_TEMPLATE');
+		        if (isset($_GET[$t])){
+		            $theme = $_GET[$t];
+		        }elseif(cookie('think_template')){
+		            $theme = cookie('think_template');
+		        }
+		        if(!file_exists($tmpl_path."/".$theme)){
+		            $theme  =   C('SP_DEFAULT_THEME');
+		        }
+		        cookie('think_template',$theme,864000);
+		    }
 		}
 		
 		$theme_suffix="";
@@ -194,7 +189,16 @@ class HomebaseController extends AppframeController {
 		// 获取当前主题的模版路径
 		define('THEME_PATH', $current_tmpl_path);
 		
-		C("TMPL_PARSE_STRING.__TMPL__",__ROOT__."/".$current_tmpl_path);
+		$cdn_settings=sp_get_option('cdn_settings');
+		if(!empty($cdn_settings['cdn_static_root'])){
+		    $cdn_static_root=rtrim($cdn_settings['cdn_static_root'],'/');
+		    C("TMPL_PARSE_STRING.__TMPL__",$cdn_static_root."/".$current_tmpl_path);
+		    C("TMPL_PARSE_STRING.__PUBLIC__",$cdn_static_root."/public");
+		    C("TMPL_PARSE_STRING.__WEB_ROOT__",$cdn_static_root);
+		}else{
+		    C("TMPL_PARSE_STRING.__TMPL__",__ROOT__."/".$current_tmpl_path);
+		}
+		
 		
 		C('SP_VIEW_PATH',$tmpl_path);
 		C('DEFAULT_THEME',$theme);
@@ -213,13 +217,14 @@ class HomebaseController extends AppframeController {
 			list($module,$template)  =   explode('@',$template);
 		}
 		
+		$module =$module."/";
 		
 		// 分析模板文件规则
 		if('' == $template) {
 			// 如果模板文件名为空 按照默认规则定位
-			$template = "/".CONTROLLER_NAME . $depr . ACTION_NAME;
+			$template = CONTROLLER_NAME . $depr . ACTION_NAME;
 		}elseif(false === strpos($template, '/')){
-			$template = "/".CONTROLLER_NAME . $depr . $template;
+			$template = CONTROLLER_NAME . $depr . $template;
 		}
 		
 		$file = sp_add_template_file_suffix($current_tmpl_path.$module.$template);
@@ -240,17 +245,13 @@ class HomebaseController extends AppframeController {
 		}
 		//by ayumi手机提示模板
 		$tpl_path = '';
-		if(C('MOBILE_TPL_ENABLED')){//开启手机模板支持
-			if(sp_is_mobile()){
-				if(file_exists(C("SP_TMPL_PATH")."/".$theme."_mobile")){
-					$theme  =   $theme."_mobile";
-					$tpl_path=C("SP_TMPL_PATH").$theme."/";
-				}
-			}
-		}
-		else{
+		if(C('MOBILE_TPL_ENABLED') && sp_is_mobile() && file_exists(C("SP_TMPL_PATH")."/".$theme."_mobile")){//开启手机模板支持
+			$theme  =   $theme."_mobile";
+			$tpl_path=C("SP_TMPL_PATH").$theme."/";
+		}else{
 			$tpl_path=C("SP_TMPL_PATH").$theme."/";
 		}
+		
 		//by ayumi手机提示模板
 		$defaultjump=THINK_PATH.'Tpl/dispatch_jump.tpl';
 		$action_success = sp_add_template_file_suffix($tpl_path.C("SP_TMPL_ACTION_SUCCESS"));
@@ -260,7 +261,7 @@ class HomebaseController extends AppframeController {
 		}else{
 			C("TMPL_ACTION_SUCCESS",$defaultjump);
 		}
-		
+
 		if(file_exists_case($action_error)){
 			C("TMPL_ACTION_ERROR",$action_error);
 		}else{

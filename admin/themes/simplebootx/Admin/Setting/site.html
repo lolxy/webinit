@@ -225,7 +225,7 @@
 											public<br>
 											themes/simplebootx/Public/assets<br>
 											例如未设置cdn前：jquery的访问地址是/public/js/jquery.js, 设置cdn是后它的访问地址就是：静态资源cdn地址+/public/js/jquery.js
-
+											
 										</span>
 									</div>
 								</div>
@@ -249,7 +249,7 @@
 				if($(this).val()==1){
 					alert("更改后，若发现前台链接不能正常访问，可能是您的服务器不支持PATHINFO，请先修改data/conf/config.php文件的URL_MODEL为0保证网站正常运行,在配置服务器PATHINFO功能后再更新为PATHINFO模式！");
 				}
-
+				
 				if($(this).val()==2){
 					alert("更改后，若发现前台链接不能正常访问，可能是您的服务器不支持REWRITE，请先修改data/conf/config.php文件的URL_MODEL为0保证网站正常运行，在开启服务器REWRITE功能后再更新为REWRITE模式！");
 				}
@@ -338,7 +338,7 @@
 								setCookie("refersh_time", 1);
 								var admin_url_changed=$("#js-site-admin-url-password").data("changed");
 								var message =admin_url_changed?data.info+'<br><span style="color:red;">后台地址已更新(请劳记！)</span>':data.info;
-
+								
 								//添加成功
 								Wind.use("artDialog", function() {
 									art.dialog({

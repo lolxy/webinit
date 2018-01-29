@@ -38,7 +38,7 @@
 								<div class="controls">
 									<select name="taxonomy">
 										<foreach name="taxonomys" item="vo">
-								       <option value="{$key}">{$vo}</option>
+								        	<option value="{$key}">{$vo}</option>
 										</foreach>
 									</select>
 								</div>
@@ -75,14 +75,14 @@
 								<div class="controls">
 									<php>
 										$list_tpls=$tpl_list;
-										unset($list_tpls['newslist']);
+										unset($list_tpls['list']);
 									</php>
-	              		<select  name="list_tpl">
-	              			<option value="list">newslist{:C("TMPL_TEMPLATE_SUFFIX")}</option>
-	              			<foreach name="list_tpls" item="vo">
-	              				<option value="{$vo}">{$vo}{:C("TMPL_TEMPLATE_SUFFIX")}</option>
-	              			</foreach>
-	              		</select>
+				              		<select  name="list_tpl">
+				              			<option value="list">list{:C("TMPL_TEMPLATE_SUFFIX")}</option>
+				              			<foreach name="list_tpls" item="vo">
+				              				<option value="{$vo}">{$vo}{:C("TMPL_TEMPLATE_SUFFIX")}</option>
+				              			</foreach>
+				              		</select>
 								</div>
 							</div>
 							<div class="control-group">
@@ -90,14 +90,14 @@
 								<div class="controls">
 									<php>
 										$article_tpls=$tpl_list;
-										unset($article_tpls['detail']);
+										unset($article_tpls['article']);
 									</php>
-	              		<select  name="one_tpl">
-	              			<option value="article">detail{:C("TMPL_TEMPLATE_SUFFIX")}</option>
-	              			<foreach name="article_tpls" item="vo">
-	              				<option value="{$vo}">{$vo}{:C("TMPL_TEMPLATE_SUFFIX")}</option>
-	              			</foreach>
-	              		</select>
+				              		<select  name="one_tpl">
+				              			<option value="article">article{:C("TMPL_TEMPLATE_SUFFIX")}</option>
+				              			<foreach name="article_tpls" item="vo">
+				              				<option value="{$vo}">{$vo}{:C("TMPL_TEMPLATE_SUFFIX")}</option>
+				              			</foreach>
+				              		</select>
 								</div>
 							</div>
 						</fieldset>

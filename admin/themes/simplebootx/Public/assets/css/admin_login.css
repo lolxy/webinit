@@ -9,7 +9,7 @@ $Id: admin_login.css 22060 2012-12-19 03:01:55Z yanchixia $
 html{
 	padding:0;
 	margin:0;
-	background:#042344;
+	background:#1262B7;
 }
 body {
 	padding:0;
@@ -33,8 +33,7 @@ h1 a {
 	margin:auto;
 	overflow: hidden;
 	color:#fff;
-	font-size: 24px;
-	font-weight: bold;
+	font-size: 45px;
     font-weight: normal;
     text-align: center;
     text-decoration: none;

@@ -6,7 +6,7 @@
 </style>
 <script type="text/html" id="photos-item-wrapper">
 	<li id="savedimage{id}">
-		<input id="photo-{id}" type="hidden" name="photos_url[]" value="{filepath}">
+		<input id="photo-{id}" type="hidden" name="photos_url[]" value="{filepath}"> 
 		<input id="photo-{id}-name" type="text" name="photos_alt[]" value="{name}" style="width: 160px;" title="图片名称">
 		<img id="photo-{id}-preview" src="{url}" style="height:36px;width: 36px;" onclick="parent.image_preview_dialog(this.src);">
 		<a href="javascript:upload_one_image('图片上传','#photo-{id}');">替换</a>
@@ -22,7 +22,6 @@
 			<li class="active"><a href="#">{:L('PORTAL_ADMINPOST_EDIT')}</a></li>
 		</ul>
 		<form action="{:U('AdminPost/edit_post')}" method="post" class="form-horizontal js-ajax-forms" enctype="multipart/form-data">
-			<input type="hidden" name="post[post_type]" value="1">
 			<div class="row-fluid">
 				<div class="span9">
 					<table class="table table-bordered">
@@ -48,7 +47,7 @@
 								多关键词之间用空格或者英文逗号隔开
 							</td>
 						</tr>
-
+	
 						<tr>
 							<th>文章来源</th>
 							<td>
@@ -67,7 +66,7 @@
 								<script type="text/plain" id="content" name="post[post_content]">{$post.post_content}</script>
 							</td>
 						</tr>
-						<!--<tr>
+						<tr>
 							<th>相册图集</th>
 							<td>
 								<ul id="photos" class="pic-list unstyled">
@@ -75,7 +74,7 @@
 										<foreach name="smeta['photo']" item="vo">
 										<php>$img_url=sp_get_image_preview_url($vo['url']);</php>
 										<li id="savedimage{$key}">
-											<input id="photo-{$key}" type="hidden" name="photos_url[]" value="{$img_url}">
+											<input id="photo-{$key}" type="hidden" name="photos_url[]" value="{$img_url}"> 
 											<input id="photo-{$key}-name" type="text" name="photos_alt[]" value="{$vo.alt}" style="width: 200px;" title="图片名称">
 											<img id="photo-{$key}-preview" src="{:sp_get_image_preview_url($vo['url'])}" style="height:36px;width: 36px;" onclick="parent.image_preview_dialog(this.src);">
 											<a href="javascript:upload_one_image('图片上传','#photo-{$key}');">替换</a>
@@ -86,7 +85,7 @@
 								</ul>
 								<a href="javascript:upload_multi_image('图片上传','#photos','photos-item-wrapper');" class="btn btn-small">选择图片</a>
 							</td>
-						</tr>-->
+						</tr>
 					</table>
 				</div>
 				<div class="span3">
@@ -133,7 +132,7 @@
 									$istop_yes=$post['istop']==1?"checked":"";
 									$istop_no=$post['istop']==0?"checked":"";
 									$recommended_yes=$post['recommended']==1?"checked":"";
-									$recommended_no=$post['recommended']==0?"checked":"";
+									$recommended_no=$post['recommended']==0?"checked":""; 
 								</php>
 								<label class="radio"><input type="radio" name="post[post_status]" value="1" {$status_yes}>审核通过</label>
 								<label class="radio"><input type="radio" name="post[post_status]" value="0" {$status_no}>未审核</label>
@@ -187,7 +186,7 @@
 	<script type="text/javascript" src="__PUBLIC__/js/ueditor/ueditor.all.min.js"></script>
 	<script type="text/javascript">
 		$(function() {
-
+			
 			//setInterval(function(){public_lock_renewal();}, 10000);
 			$(".js-ajax-close-btn").on('click', function(e) {
 				e.preventDefault();

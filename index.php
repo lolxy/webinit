@@ -18,7 +18,7 @@ if (ini_get('magic_quotes_gpc')) {
 	$_POST = stripslashesRecursive($_POST);
 }
 //开启调试模式
-define("APP_DEBUG", false);
+define("APP_DEBUG", true);
 //网站当前路径
 define('SITE_PATH', dirname(__FILE__)."/");
 //项目路径，不可更改
@@ -39,7 +39,7 @@ define("THINKCMF_VERSION", 'X2.2.3');
 define("THINKCMF_CORE_TAGLIBS", 'cx,Common\Lib\Taglib\TagLibSpadmin,Common\Lib\Taglib\TagLibHome');
 
 if(function_exists('saeAutoLoader') || isset($_SERVER['HTTP_BAE_ENV_APPID'])){
-
+	
 }else{
 	if(!file_exists("data/install.lock")){
 		if(strtolower($_GET['g'])!="install"){
@@ -57,3 +57,4 @@ if(file_exists(UC_CLIENT_ROOT."config.inc.php")){
 
 //载入框架核心文件
 require SPAPP_PATH.'Core/ThinkPHP.php';
+
