@@ -1,0 +1,60 @@
+<admintpl file="header" />
+</head>
+<body class="J_scroll_fixed">
+	<div class="wrap J_check_wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="{:U('variable/index')}">变量管理</a></li>
+			<li><a href="{:U('variable/add')}">添加变量</a></li>
+		</ul>
+		<form method="post" class="J_ajaxForm" action="{:U('Variable/listorders')}">
+			<div class="table-actions">
+				<button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit">排序</button>
+			</div>
+			<table class="table table-hover table-bordered table-list">
+				<thead>
+					<tr>
+						<th width="16"><label><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"></label></th>
+						<th width="50">排序</th>
+						<th width="50">ID</th>
+						<th>变量名称</th>
+						<th>变量值</th>
+						<th>备注说明</th>
+						<th width="120">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<foreach name="variable" item="vo">
+					<tr>
+						<td><input type="checkbox" class="J_check" data-yid="J_check_y" data-xid="J_check_x" name="ids[]" value="{$vo.id}"></td>
+						<td><input name='listorders[{$vo.id}]' class="input input-order mr5" type='text' size='3' value='{$vo.listorder}'></td>
+						<td>{$vo.id}</td>
+						<td>{$vo.variablename}</td>
+						<td>{$vo.variablevalue}</td>
+						<td>{$vo.beizhu}</td>
+						<td>
+							<a href="{:U('variable/edit',array('id'=>$vo['id']))}">修改</a>
+							<a href="{:U('variable/delete',array('id'=>$vo['id']))}" class="J_ajax_del" style="display:none;">删除</a>
+						</td>
+					</tr>
+					</foreach>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th width="16"><label><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"></label></th>
+						<th width="50">排序</th>
+						<th width="50">ID</th>
+						<th>变量名称</th>
+						<th>变量值</th>
+						<th>备注说明</th>
+						<th width="120">操作</th>
+					</tr>
+				</tfoot>
+			</table>
+			<div class="table-actions">
+				<button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit">排序</button>
+			</div>
+		</form>
+	</div>
+	<script src="__ROOT__/statics/js/common.js?"></script>
+</body>
+</html>

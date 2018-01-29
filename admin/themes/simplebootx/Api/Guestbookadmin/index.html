@@ -1,0 +1,60 @@
+<admintpl file="header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="{:U('guestbookadmin/index')}">{:L('API_GUESTBOOKADMIN_INDEX')}</a></li>
+		</ul>
+		<form method="post" class="js-ajax-form">
+			<table class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th width="50">ID</th>
+						<th width="100">联系人姓名</th>
+                        <th>合作单位（个人）</th>
+						<th width="150">邮箱地址</th>
+                        <th>联系电话</th>
+						<th style="min-width: 60px;">通信地址</th>
+						<th>合作项目</th>
+                        <th>留言内容</th>
+						<th width="120">{:L('TIME')}</th>
+						<th width="120">{:L('ACTIONS')}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<foreach name="guestmsgs" item="vo">
+					<tr>
+						<td>{$vo.id}</td>
+						<td>{$vo.full_name}</td>
+                        <td>{$vo.company}</td>
+						<td>{$vo.email}</td>
+						<td>{$vo.phone}</td>
+                        <td>{$vo.address}</td>
+                        <td>
+                        	<switch name="vo.type">
+                              <case value="1">酒店空间（公共区域/套房）</case>
+                              <case value="2">住宅、会所、餐饮</case>
+                              <case value="3">办公空间、店面</case>
+                              <case value="4">户外景观</case>
+                              <case value="5">外观（立面、门头）</case>
+                              <case value="6">电梯厅、电梯大堂、地下室、门廊、走廊</case>
+                              <case value="7">室外</case>
+                              <case value="8">草图大师</case>
+                              <default />酒店空间（公共区域/套房）
+                            </switch>
+                        </td>
+						<td>{$vo.msg}</td>
+						<td>{$vo.createtime}</td>
+						<td>
+							<a href="{:U('guestbookadmin/delete',array('id'=>$vo['id']))}" class="js-ajax-delete">{:L('DELETE')}</a>
+						</td>
+					</tr>
+					</foreach>
+				</tbody>
+			</table>
+			<div class="pagination">{$page}</div>
+		</form>
+	</div>
+	<script src="__PUBLIC__/js/common.js?"></script>
+</body>
+</html>

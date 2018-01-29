@@ -1,0 +1,43 @@
+<admintpl file="header" />
+</head>
+<body class="J_scroll_fixed">
+	<div class="wrap jj">
+		<ul class="nav nav-tabs">
+			<li><a href="{:U('variable/index')}">变量管理</a></li>
+			<li class="active"><a href="{:U('variable/add')}">添加变量</a></li>
+		</ul>
+		<div class="common-form">
+			<form method="post" class="form-horizontal J_ajaxForm" action="{:U('variable/add_post')}">
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label">变量名称:</label>
+						<div class="controls">
+							<input type="text" class="input" name="variableName" value="">
+							<span class="must_red">*</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">变量值:</label>
+						<div class="controls">
+							<input type="text" class="input" name="variableValue" value="">
+							<span class="must_red">*</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">备注说明:</label>
+						<div class="controls">
+							<input type="text" class="input" name="beizhu" value="">
+							<span class="must_red">*</span>
+						</div>
+					</div>
+				</fieldset>
+				<div class="form-actions">
+					<button type="submit" class="btn btn-primary btn_submit J_ajax_submit_btn">添加</button>
+					<a class="btn" href="__URL__">返回</a>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="__ROOT__/statics/js/common.js"></script>
+</body>
+</html>
