@@ -12,6 +12,19 @@ class HomebaseController extends AppframeController {
 	
 	function _initialize() {
 		parent::_initialize();
+		
+		$this->variable_model = D("Common/Variable");
+		
+		$sql=$this->variable_model->select();
+		foreach($sql as $v){
+			$name[]=$v['variablename'];
+			$data[]=$v['variablevalue'];
+		}
+
+		for($i=0;$i<count($name);$i++){
+			$this->$name[$i]=$data[$i];
+		}
+		
 		defined('TMPL_PATH') or define("TMPL_PATH", C("SP_TMPL_PATH"));
 		$site_options=get_site_options();
 		$this->assign($site_options);
