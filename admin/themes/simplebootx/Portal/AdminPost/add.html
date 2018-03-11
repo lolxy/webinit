@@ -169,7 +169,12 @@
 				//javascript
 
 				//编辑器
-				editorcontent = new baidu.editor.ui.Editor();
+				editorcontent = new baidu.editor.ui.Editor({
+					allowDivTransToP: false,
+					wordCount:false,
+					elementPathEnabled:false,
+					autoHeightEnabled:true
+				});
 				editorcontent.render('content');
 				try {
 					editorcontent.sync();
